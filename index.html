@@ -16,9 +16,8 @@
   <button onclick="goOnline()">🌐 Online</button>
 </div>
 
-<!-- ================================================= -->
-<!-- ================= OFFLINE ====================== -->
-<!-- ================================================= -->
+<!-- ================= OFFLINE (زي ما هو) ================= -->
+<!-- الأوفلاين شغال ومش متغير -->
 
 <div id="setup" class="card hidden">
   <h3>أسماء اللاعبين</h3>
@@ -65,12 +64,10 @@
   <button onclick="offlineEditPlayers()">👥 تعديل اللاعبين</button>
 </div>
 
-<!-- ================================================= -->
-<!-- ================= ONLINE ======================= -->
-<!-- ================================================= -->
+<!-- ================= ONLINE ================= -->
 
 <!-- LOGIN -->
-<div id="onlineLogin" class="card hidden">
+<div id="onlineLoginCard" class="card hidden">
   <h3>🌐 Online</h3>
   <input id="onlineName" placeholder="اسمك">
   <button onclick="onlineLogin()">دخول</button>
@@ -121,7 +118,6 @@
 </div>
 
 <!-- ================= SCRIPTS ================= -->
-
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
