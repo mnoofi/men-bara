@@ -39,9 +39,19 @@
 <div id="onlineLobby" class="card hidden">
   <h3>رقم الغرفة</h3>
   <h2 id="roomCode"></h2>
-  <p>في انتظار اللاعبين...</p>
-  <button onclick="goHome()">⬅ رجوع</button>
+
+  <p id="lobbyText">في انتظار اللاعبين...</p>
+
+  <!-- زر بدء الراوند -->
+  <button id="startRoundBtn"
+          class="hidden"
+          onclick="startRound()">
+    ▶️ بدء الراوند
+  </button>
+
+  <button onclick="backToMain()">⬅ رجوع</button>
 </div>
+
 
 
 <!-- SETUP -->
