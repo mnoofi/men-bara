@@ -1,143 +1,166 @@
-/*
-  Men Bara El Salfa
-  Developed by:Mohamed Serag
-  © 2025 All Rights Reserved
-*/
+let players=[];
+let scores={};
+let outPlayers=[];
+let current=0;
+let secretWord="";
 
-const data = {
-  foodDrink: [
-    // أكل
-    "بيتزا","كشري","برجر","شاورما","ملوخية",
-    "محشي","مكرونة","أرز","فراخ","سمك",
+/******** السوالف ********/
+const words=[
+ "كشري","برجر","شاورما","قهوة","بيبسي",
+ "فستان","فستان سهرة","جيبة",
+ "ملهى ليلي","سينما","كافيه",
+ "توكتوك","ميكروباص","أوبر",
+ "كلب","قطة","حمار",
+ "شاكوش","مقص","ولاعة",
+ "سجان","دكتور","سايس",
+ "سبونج بوب","بن تن",
+ "حمام","لمبة","كنبة"
+];
 
-    // فواكه
-    "تفاح","موز","مانجا","برتقال","عنب",
-    "بطيخ","فراولة","أناناس","كيوي",
+function rnd(){return words[Math.floor(Math.random()*words.length)];}
+function qs(id){return document.getElementById(id);}
+function hideAll(){document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));}
 
-    // خضار
-    "بطاطس","طماطم","خيار","بصل","جزر",
-    "كوسة","باذنجان","فلفل",
+/******** NAV ********/
+function goHome(){
+  hideAll();
+  qs("home").classList.remove("hidden");
+}
 
-    // مشروبات
-    "شاي","قهوة","نسكافيه","عصير",
-    "بيبسي","كولا","ليمون"
-  ],
+function goOffline(){
+  players=[];
+  scores={};
+  qs("playersInputs").innerHTML="";
+  for(let i=0;i<4;i++) addPlayer();
+  hideAll();
+  qs("setup").classList.remove("hidden");
+}
 
-  animals: [
-    "كلب","قطة","أسد","نمر",
-    "فيل","حصان","زرافة","قرد"
-  ],
-
-  cars: [
-    "BMW","Mercedes","Toyota",
-    "Tesla","Hyundai","Kia","Ferrari"
-  ],
-
-  cartoon: [
-    "Tom & Jerry","SpongeBob",
-    "Naruto","One Piece","Ben 10","Dora"
-  ],
-
-  games: [
-    "FIFA","PUBG","Minecraft",
-    "GTA","Call of Duty","Among Us"
-  ],
-
-  jobs: [
-    "دكتور","مهندس","مدرس","محاسب",
-    "مبرمج","طيار","صيدلي","محامي","مصمم"
-  ]
-};
-
-let players = [];
-let roles = [];
-let index = 0;
-let allWords = [];
-
-function startGame() {
-  players = document
-    .getElementById("names")
-    .value
-    .split("\n")
-    .map(n => n.trim())
-    .filter(n => n !== "");
-
-  const checked = document.querySelectorAll("input[type=checkbox]:checked");
-
-  if (players.length < 3) {
-    alert("لازم على الأقل 3 لاعبين");
+/******** PLAYERS ********/
+function addPlayer(){
+  if(qs("playersInputs").children.length>=8){
+    alert("أقصى عدد 8 لاعبين");
     return;
   }
+  const i=document.createElement("input");
+  i.placeholder="اسم اللاعب";
+  qs("playersInputs").appendChild(i);
+}
 
-  if (checked.length === 0) {
-    alert("اختار سالفة واحدة على الأقل");
-    return;
-  }
+function startGame(){
+  players=[];
+  scores={};
 
-  let words = [];
-  checked.forEach(c => {
-    words = words.concat(data[c.value]);
+  document.querySelectorAll("#playersInputs input").forEach(i=>{
+    if(i.value.trim()){
+      players.push(i.value.trim());
+      scores[i.value.trim()]=0;
+    }
   });
 
-  allWords = words;
+  if(players.length<4){
+    alert("أقل عدد 4 لاعبين");
+    return;
+  }
 
-  const secretWord = words[Math.floor(Math.random() * words.length)];
-  const imposter = Math.floor(Math.random() * players.length);
+  const outCount=parseInt(qs("outCount").value);
 
-  roles = players.map((p, i) =>
-    i === imposter
-      ? "❌ انت برا السالفة<br>حاول تعرف الكلمة من كلامهم"
-      : "✅ انت جوا السالفة<br><b>الكلمة:</b> " + secretWord
-  );
+  secretWord=rnd();
+  outPlayers=[...players].sort(()=>0.5-Math.random()).slice(0,outCount);
 
-  document.getElementById("setup").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
-
-  index = 0;
-  showTurn();
+  current=0;
+  showPass();
 }
 
-function showTurn() {
-  document.getElementById("turnText").innerText =
-    "📱 ادي الموبايل لـ " + players[index];
-  document.getElementById("roleText").innerHTML = "";
+/******** GAME ********/
+function showPass(){
+  hideAll();
+  qs("passText").innerText="📱 مرر الموبايل لـ "+players[current];
+  qs("pass").classList.remove("hidden");
 }
 
-function next() {
-  const roleText = document.getElementById("roleText");
+function showRole(){
+  hideAll();
+  const name=players[current];
+  if(outPlayers.includes(name)){
+    qs("roleText").innerText="❌ أنت برا السالفة";
+  }else{
+    qs("roleText").innerText="✅ الكلمة: "+secretWord;
+  }
+  qs("role").classList.remove("hidden");
+}
 
-  if (roleText.innerHTML === "") {
-    roleText.innerHTML = roles[index];
-  } else {
-    index++;
-    if (index >= players.length) {
-      document.getElementById("turnText").innerText = "🧠 خمن الكلمة";
-      showHints();
-      return;
+function nextPlayer(){
+  current++;
+  if(current>=players.length){
+    hideAll();
+    qs("reveal").classList.remove("hidden");
+  }else{
+    showPass();
+  }
+}
+
+/******** REVEAL ********/
+function revealOut(){
+  hideAll();
+  qs("outNames").innerText="🕵️ برا السالفة: "+outPlayers.join(" و ");
+  qs("outResult").classList.remove("hidden");
+}
+
+/******** GUESS ********/
+function startGuess(){
+  hideAll();
+  const arr=[secretWord];
+  while(arr.length<8){
+    const w=rnd();
+    if(!arr.includes(w)) arr.push(w);
+  }
+  arr.sort(()=>Math.random()-0.5);
+
+  const div=qs("choices");
+  div.innerHTML="";
+  arr.forEach(w=>{
+    const b=document.createElement("button");
+    b.innerText=w;
+    b.onclick=()=>checkGuess(w);
+    div.appendChild(b);
+  });
+
+  qs("guess").classList.remove("hidden");
+}
+
+function checkGuess(w){
+  outPlayers.forEach(p=>{
+    if(w===secretWord){
+      scores[p]+=1;
+    }else{
+      scores[p]-=1;
     }
-    showTurn();
-  }
+  });
+  showScore();
 }
 
-function showHints() {
-  let hints = [];
-  while (hints.length < 5) {
-    let w = allWords[Math.floor(Math.random() * allWords.length)];
-    if (!hints.includes(w)) hints.push(w);
+/******** SCORE ********/
+function showScore(){
+  hideAll();
+  const ul=qs("scoreList");
+  ul.innerHTML="";
+  for(let p in scores){
+    ul.innerHTML+=`<li>${p}: ${scores[p]}</li>`;
   }
-
-  document.getElementById("roleText").innerHTML = `
-    <p>كلمات قريبة من السالفة 👇</p>
-    <ul>
-      ${hints.map(h => `<li>${h}</li>`).join("")}
-    </ul>
-    <button onclick="resetGame()">🔄 بدء دور جديد</button>
-  `;
+  qs("score").classList.remove("hidden");
 }
 
-function resetGame() {
-  document.getElementById("game").classList.add("hidden");
-  document.getElementById("setup").classList.remove("hidden");
-  document.getElementById("names").value = "";
-  index = 0;
+/******** NEXT ********/
+function newRound(){
+  const outCount=outPlayers.length;
+  secretWord=rnd();
+  outPlayers=[...players].sort(()=>0.5-Math.random()).slice(0,outCount);
+  current=0;
+  showPass();
+}
+
+function editPlayers(){
+  hideAll();
+  qs("setup").classList.remove("hidden");
 }

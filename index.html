@@ -7,55 +7,97 @@
 </head>
 <body>
 
-<div class="container">
+<button class="back" onclick="goHome()">⬅ رجوع</button>
 
-  <h1>🎭 مين برا السالفة</h1>
+<!-- HOME -->
+<div id="home" class="card">
+  <h2>🎭 مين برا السالفة</h2>
+  <button onclick="goOffline()">🟢 Offline</button>
+  <button onclick="goOnline()">🌐 Online</button>
 
-  <!-- اختيار الوضع -->
-  <div id="modeSelect">
-    <h3>اختار طريقة اللعب</h3>
-    <button onclick="selectMode('offline')">📱 Offline</button>
-    <button onclick="selectMode('online')">🌍 Online</button>
-  </div>
+</div>
+<!-- ONLINE LOGIN -->
+<div id="onlineLogin" class="card hidden">
+  <h3>🌐 Online</h3>
+  <input id="onlineName" placeholder="اسمك">
+  <button onclick="onlineLogin()">دخول</button>
+  <button onclick="goHome()">⬅ رجوع</button>
+</div>
 
-  <!-- منيو الأونلاين -->
-  <div id="onlineMenu" class="hidden">
-    <h3>🌍 Online Mode</h3>
-    <button onclick="alert('قريبًا: غرفة عامة')">🌐 دخول غرفة عامة</button>
-    <button onclick="alert('قريبًا: إنشاء غرفة خاصة')">➕ إنشاء غرفة خاصة</button>
-    <button onclick="alert('قريبًا: دخول برقم غرفة')">🔢 دخول غرفة برقم</button>
-    <button onclick="backToMode()">⬅ رجوع</button>
-  </div>
+<!-- ONLINE MENU -->
+<div id="onlineMenu" class="card hidden">
+  <h3>اختر</h3>
+  <button onclick="createRoom()">إنشاء غرفة</button>
 
-  <!-- إعدادات الأوفلاين -->
-  <div id="setup" class="hidden">
-    <h3>أسماء اللاعبين</h3>
-    <textarea id="names" placeholder="اكتب اسم كل لاعب في سطر"></textarea>
+  <input id="joinCode" placeholder="كود الغرفة (6 أرقام)">
+  <button onclick="joinRoom()">انضمام</button>
 
-    <h3>اختار السالفة</h3>
-    <div class="cats">
-      <label><input type="checkbox" value="foodDrink"> 🍽️ أكل ومشروبات</label><br>
-      <label><input type="checkbox" value="places"> 🏠 أماكن</label><br>
-      <label><input type="checkbox" value="jobs"> 💼 وظايف</label><br>
-      <label><input type="checkbox" value="animals"> 🐶 حيوانات</label><br>
-      <label><input type="checkbox" value="cars"> 🚗 سيارات</label><br>
-      <label><input type="checkbox" value="cartoon"> 📺 كرتون</label><br>
-      <label><input type="checkbox" value="games"> 🎮 ألعاب</label>
-    </div>
+  <button onclick="goHome()">⬅ رجوع</button>
+</div>
 
-    <button onclick="startGame()">ابدأ اللعبة</button>
-    <button onclick="backToMode()">⬅ رجوع</button>
-  </div>
+<!-- ONLINE LOBBY -->
+<div id="onlineLobby" class="card hidden">
+  <h3>رقم الغرفة</h3>
+  <h2 id="roomCode"></h2>
+  <p>في انتظار اللاعبين...</p>
+  <button onclick="goHome()">⬅ رجوع</button>
+</div>
 
-  <!-- شاشة اللعب -->
-  <div id="game" class="hidden">
-    <h2 id="turnText"></h2>
-    <div id="roleText"></div>
-    <button id="nextBtn" onclick="next()">التالي</button>
-  </div>
 
+<!-- SETUP -->
+<div id="setup" class="card hidden">
+  <h3>أسماء اللاعبين</h3>
+  <div id="playersInputs"></div>
+
+  <button onclick="addPlayer()">➕ إضافة لاعب</button>
+
+  <label>عدد اللي برا السالفة</label>
+  <select id="outCount">
+    <option value="1">واحد</option>
+    <option value="2">اتنين</option>
+  </select>
+
+  <button onclick="startGame()">▶️ Start Game</button>
+</div>
+
+<!-- PASS -->
+<div id="pass" class="card hidden">
+  <h3 id="passText"></h3>
+  <button onclick="showRole()">👁 شوف دورك</button>
+</div>
+
+<!-- ROLE -->
+<div id="role" class="card hidden">
+  <h3 id="roleText"></h3>
+  <button onclick="nextPlayer()">📱 التالي</button>
+</div>
+
+<!-- REVEAL -->
+<div id="reveal" class="card hidden">
+  <button onclick="revealOut()">🕵️ كشف اللي برا السالفة</button>
+</div>
+
+<!-- OUT RESULT -->
+<div id="outResult" class="card hidden">
+  <h3 id="outNames"></h3>
+  <button onclick="startGuess()">🧠 إعطاء فرصة تخمين</button>
+</div>
+
+<!-- GUESS -->
+<div id="guess" class="card hidden">
+  <h3>اختار الكلمة الصح</h3>
+  <div id="choices"></div>
+</div>
+
+<!-- SCORE -->
+<div id="score" class="card hidden">
+  <h3>🏆 النقاط</h3>
+  <ul id="scoreList"></ul>
+  <button onclick="newRound()">🔁 دور جديد</button>
+  <button onclick="editPlayers()">👥 تعديل اللاعبين</button>
 </div>
 
 <script src="script.js"></script>
+<script src="online.js"></script>
 </body>
 </html>
