@@ -9,14 +9,16 @@
 
 <button class="back" onclick="offlineGoHome()">⬅ رجوع</button>
 
-<!-- HOME -->
+<!-- ================= HOME ================= -->
 <div id="home" class="card">
   <h2>🎭 مين برا السالفة</h2>
   <button onclick="offlineStart()">🟢 Offline</button>
   <button onclick="goOnline()">🌐 Online</button>
 </div>
 
-<!-- ================= OFFLINE ================= -->
+<!-- ================================================= -->
+<!-- ================= OFFLINE ====================== -->
+<!-- ================================================= -->
 
 <div id="setup" class="card hidden">
   <h3>أسماء اللاعبين</h3>
@@ -63,57 +65,63 @@
   <button onclick="offlineEditPlayers()">👥 تعديل اللاعبين</button>
 </div>
 
-<!-- ================= ONLINE (واجهة بس) ================= -->
+<!-- ================================================= -->
+<!-- ================= ONLINE ======================= -->
+<!-- ================================================= -->
 
+<!-- LOGIN -->
 <div id="onlineLogin" class="card hidden">
   <h3>🌐 Online</h3>
   <input id="onlineName" placeholder="اسمك">
   <button onclick="onlineLogin()">دخول</button>
   <button onclick="offlineGoHome()">⬅ رجوع</button>
 </div>
-<!-- ONLINE MENU -->
-<div id="onlineMenu" class="card hidden">
-  <h3>🌐 Online</h3>
-  <button onclick="createRoom()">➕ إنشاء غرفة</button>
 
+<!-- MENU -->
+<div id="onlineMenu" class="card hidden">
+  <button onclick="createRoom()">➕ إنشاء غرفة</button>
   <input id="joinCode" placeholder="كود الغرفة (6 أرقام)">
   <button onclick="joinRoom()">🚪 انضمام</button>
-
   <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
-<!-- ONLINE LOBBY -->
+<!-- LOBBY -->
 <div id="onlineLobby" class="card hidden">
   <h3>رقم الغرفة</h3>
   <h2 id="roomCode"></h2>
-
-  <p id="lobbyText">في انتظار اللاعبين...</p>
-
-  <button id="startRoundBtn"
-          class="hidden"
-          onclick="startRound()">
-    ▶️ بدء الراوند
-  </button>
-
+  <p id="lobbyText"></p>
+  <button id="startRoundBtn" class="hidden" onclick="startRound()">▶️ بدء الراوند</button>
   <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
-<!-- ONLINE ROLE -->
+<!-- ROLE -->
 <div id="onlineRole" class="card hidden">
   <h3 id="onlineRoleText"></h3>
 </div>
 
-<!-- ONLINE CHAT -->
+<!-- CHAT -->
 <div id="onlineChat" class="card hidden">
   <h3 id="turnText"></h3>
   <div id="chatMessages" style="min-height:120px"></div>
-
-  <input id="chatInput" class="hidden" placeholder="اكتب كلمة واحدة">
+  <input id="chatInput" class="hidden" placeholder="كلمة واحدة">
   <button id="sendBtn" class="hidden" onclick="sendWord()">إرسال</button>
 </div>
 
+<!-- VOTE -->
+<div id="onlineVote" class="card hidden">
+  <h3>🗳️ صوّت: مين برا السالفة؟</h3>
+  <div id="voteList"></div>
+  <button onclick="submitVote()">✔️ تأكيد التصويت</button>
+</div>
 
-<!-- Firebase -->
+<!-- RESULT -->
+<div id="onlineResult" class="card hidden">
+  <h3 id="voteResultText"></h3>
+  <button onclick="goHome()">🏠 رجوع</button>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
