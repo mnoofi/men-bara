@@ -1,78 +1,84 @@
-// ===== بيانات السوالف =====
+/*
+  Men Bara El Salfa
+  Developed by:Mohamed Serag
+  © 2025 All Rights Reserved
+*/
+
 const data = {
   foodDrink: [
-    "بيتزا","كشري","برجر","شاورما","محشي","مكرونة","أرز","فراخ",
-    "تفاح","موز","مانجا","برتقال","بطيخ",
-    "شاي","قهوة","نسكافيه","بيبسي","كولا"
+    // أكل
+    "بيتزا","كشري","برجر","شاورما","ملوخية",
+    "محشي","مكرونة","أرز","فراخ","سمك",
+
+    // فواكه
+    "تفاح","موز","مانجا","برتقال","عنب",
+    "بطيخ","فراولة","أناناس","كيوي",
+
+    // خضار
+    "بطاطس","طماطم","خيار","بصل","جزر",
+    "كوسة","باذنجان","فلفل",
+
+    // مشروبات
+    "شاي","قهوة","نسكافيه","عصير",
+    "بيبسي","كولا","ليمون"
   ],
-  places: [
-    "مستشفى","عيادة","عيادة بيطرية","مستشفى أمراض عقلية",
-    "حديقة حيوانات","سيرك","سينما","مسرح",
-    "فيلا","قصر","سجن","قسم شرطة",
-    "كافيه","قهوة بلدي","جيم"
+
+  animals: [
+    "كلب","قطة","أسد","نمر",
+    "فيل","حصان","زرافة","قرد"
   ],
+
+  cars: [
+    "BMW","Mercedes","Toyota",
+    "Tesla","Hyundai","Kia","Ferrari"
+  ],
+
+  cartoon: [
+    "Tom & Jerry","SpongeBob",
+    "Naruto","One Piece","Ben 10","Dora"
+  ],
+
+  games: [
+    "FIFA","PUBG","Minecraft",
+    "GTA","Call of Duty","Among Us"
+  ],
+
   jobs: [
-    "دكتور","ممرض","ممرضة","مهندس","مدرس","محاسب",
-    "مبرمج","هاكر","صياد سمك","جلاد","سجّان",
-    "يوتيوبر","تيكتوكر","ممثل"
-  ],
-  animals: ["كلب","قطة","أسد","نمر","فيل","قرد"],
-  cars: ["BMW","Mercedes","Toyota","Tesla","Ferrari"],
-  cartoon: ["Tom & Jerry","SpongeBob","Naruto","Ben 10"],
-  games: ["FIFA","PUBG","GTA","Among Us"]
+    "دكتور","مهندس","مدرس","محاسب",
+    "مبرمج","طيار","صيدلي","محامي","مصمم"
+  ]
 };
 
-// ===== متغيرات =====
 let players = [];
 let roles = [];
 let index = 0;
 let allWords = [];
-let hints = [];
-let gamePhase = "roles";
 
-// ===== التحكم في الشاشات =====
-function selectMode(mode) {
-  document.getElementById("modeSelect").classList.add("hidden");
-
-  if (mode === "offline") {
-    document.getElementById("setup").classList.remove("hidden");
-  } else {
-    document.getElementById("onlineMenu").classList.remove("hidden");
-  }
-}
-
-function backToMode() {
-  hideAll();
-  document.getElementById("modeSelect").classList.remove("hidden");
-}
-
-function hideAll() {
-  document.getElementById("modeSelect").classList.add("hidden");
-  document.getElementById("onlineMenu").classList.add("hidden");
-  document.getElementById("setup").classList.add("hidden");
-  document.getElementById("game").classList.add("hidden");
-}
-
-// ===== بدء اللعبة (Offline) =====
 function startGame() {
-  players = document.getElementById("names").value
+  players = document
+    .getElementById("names")
+    .value
     .split("\n")
     .map(n => n.trim())
-    .filter(n => n);
+    .filter(n => n !== "");
 
   const checked = document.querySelectorAll("input[type=checkbox]:checked");
 
-  if (players.length < 4) {
-    alert("لازم على الأقل 4 لاعبين");
+  if (players.length < 3) {
+    alert("لازم على الأقل 3 لاعبين");
     return;
   }
+
   if (checked.length === 0) {
     alert("اختار سالفة واحدة على الأقل");
     return;
   }
 
   let words = [];
-  checked.forEach(c => words.push(...data[c.value]));
+  checked.forEach(c => {
+    words = words.concat(data[c.value]);
+  });
+
   allWords = words;
 
   const secretWord = words[Math.floor(Math.random() * words.length)];
@@ -80,20 +86,14 @@ function startGame() {
 
   roles = players.map((p, i) =>
     i === imposter
-      ? "❌ انت برا السالفة<br>حاول تعرف الكلمة"
+      ? "❌ انت برا السالفة<br>حاول تعرف الكلمة من كلامهم"
       : "✅ انت جوا السالفة<br><b>الكلمة:</b> " + secretWord
   );
 
-  hints = [];
-  while (hints.length < 6) {
-    let w = allWords[Math.floor(Math.random() * allWords.length)];
-    if (!hints.includes(w) && w !== secretWord) hints.push(w);
-  }
-
-  hideAll();
+  document.getElementById("setup").classList.add("hidden");
   document.getElementById("game").classList.remove("hidden");
+
   index = 0;
-  gamePhase = "roles";
   showTurn();
 }
 
@@ -103,30 +103,41 @@ function showTurn() {
   document.getElementById("roleText").innerHTML = "";
 }
 
-// ===== زر التالي =====
 function next() {
   const roleText = document.getElementById("roleText");
 
-  if (gamePhase === "roles") {
-    if (roleText.innerHTML === "") {
-      roleText.innerHTML = roles[index];
-    } else {
-      index++;
-      if (index >= players.length) {
-        gamePhase = "hints";
-        showHints();
-      } else {
-        showTurn();
-      }
+  if (roleText.innerHTML === "") {
+    roleText.innerHTML = roles[index];
+  } else {
+    index++;
+    if (index >= players.length) {
+      document.getElementById("turnText").innerText = "🧠 خمن الكلمة";
+      showHints();
+      return;
     }
+    showTurn();
   }
 }
 
 function showHints() {
-  document.getElementById("turnText").innerText = "🧠 خمن الكلمة";
+  let hints = [];
+  while (hints.length < 5) {
+    let w = allWords[Math.floor(Math.random() * allWords.length)];
+    if (!hints.includes(w)) hints.push(w);
+  }
+
   document.getElementById("roleText").innerHTML = `
     <p>كلمات قريبة من السالفة 👇</p>
-    <ul>${hints.map(h => `<li>${h}</li>`).join("")}</ul>
-    <button onclick="backToMode()">🔄 بدء دور جديد</button>
+    <ul>
+      ${hints.map(h => `<li>${h}</li>`).join("")}
+    </ul>
+    <button onclick="resetGame()">🔄 بدء دور جديد</button>
   `;
+}
+
+function resetGame() {
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+  document.getElementById("names").value = "";
+  index = 0;
 }
