@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>مين برا السالفة</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>مين برا السالفة</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<button class="back" onclick="goHome()">⬅ رجوع</button>
-
-<!-- HOME -->
+<!-- ================= HOME ================= -->
 <div id="home" class="card">
   <h2>🎭 مين برا السالفة</h2>
   <button onclick="goOffline()">🟢 Offline</button>
   <button onclick="goOnline()">🌐 Online</button>
-
 </div>
+
+<!-- ================= ONLINE ================= -->
+
 <!-- ONLINE LOGIN -->
 <div id="onlineLogin" class="card hidden">
   <h3>🌐 Online</h3>
@@ -42,17 +42,30 @@
 
   <p id="lobbyText">في انتظار اللاعبين...</p>
 
-  <!-- زر بدء الراوند -->
   <button id="startRoundBtn"
           class="hidden"
           onclick="startRound()">
     ▶️ بدء الراوند
   </button>
 
-  <button onclick="backToMain()">⬅ رجوع</button>
+  <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
+<!-- ONLINE ROLE -->
+<div id="onlineRole" class="card hidden">
+  <h3 id="onlineRoleText"></h3>
+</div>
 
+<!-- ONLINE CHAT -->
+<div id="onlineChat" class="card hidden">
+  <h3 id="turnText"></h3>
+  <div id="chatMessages" style="min-height:120px"></div>
+
+  <input id="chatInput" class="hidden" placeholder="اكتب كلمة واحدة">
+  <button id="sendBtn" class="hidden" onclick="sendWord()">إرسال</button>
+</div>
+
+<!-- ================= OFFLINE ================= -->
 
 <!-- SETUP -->
 <div id="setup" class="card hidden">
@@ -76,7 +89,7 @@
   <button onclick="showRole()">👁 شوف دورك</button>
 </div>
 
-<!-- ROLE -->
+<!-- ROLE (OFFLINE) -->
 <div id="role" class="card hidden">
   <h3 id="roleText"></h3>
   <button onclick="nextPlayer()">📱 التالي</button>
@@ -106,11 +119,16 @@
   <button onclick="newRound()">🔁 دور جديد</button>
   <button onclick="editPlayers()">👥 تعديل اللاعبين</button>
 </div>
+
+<!-- ================= SCRIPTS ================= -->
+
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
+<!-- Game Scripts -->
 <script src="script.js"></script>
 <script src="online.js"></script>
+
 </body>
 </html>

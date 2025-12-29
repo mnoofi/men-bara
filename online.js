@@ -25,7 +25,7 @@ function uid() {
   return "u_" + Math.random().toString(36).slice(2, 9);
 }
 
-function hideAll() {
+function hideAllOnline() {
   document.querySelectorAll(".card").forEach(c =>
     c.classList.add("hidden")
   );
@@ -33,12 +33,12 @@ function hideAll() {
 
 /******** NAVIGATION ********/
 function goOnline() {
-  hideAll();
+  hideAllOnline();
   document.getElementById("onlineLogin").classList.remove("hidden");
 }
 
 function goHome() {
-  hideAll();
+  hideAllOnline();
   document.getElementById("home").classList.remove("hidden");
 }
 
@@ -50,7 +50,7 @@ function onlineLogin() {
   online.name = n;
   online.id = uid();
 
-  hideAll();
+  hideAllOnline();
   document.getElementById("onlineMenu").classList.remove("hidden");
 }
 
@@ -74,7 +74,7 @@ function createRoom() {
 
   listenRoom();
 
-  hideAll();
+  hideAllOnline();
   document.getElementById("onlineLobby").classList.remove("hidden");
   document.getElementById("roomCode").innerText = online.roomId;
 }
@@ -96,7 +96,7 @@ function joinRoom() {
 
   listenRoom();
 
-  hideAll();
+  hideAllOnline();
   document.getElementById("onlineLobby").classList.remove("hidden");
   document.getElementById("roomCode").innerText = code;
 }
@@ -167,11 +167,11 @@ function startRound() {
 
 /******** SHOW ROLE ********/
 function showRole(room) {
-  hideAll();
+  hideAllOnline();
 
   const myRole = room.players[online.id].role;
-  const roleDiv = document.getElementById("role");
-  const roleText = document.getElementById("roleText");
+  const roleDiv = document.getElementById("onlinerole");
+  const roleText = document.getElementById("onlineroleText");
 
   roleDiv.classList.remove("hidden");
 
@@ -210,7 +210,7 @@ function startChatPhase() {
 
 /******** CHAT LISTENER ********/
 function listenChat(room) {
-  hideAll();
+  hideAllOnline();
   document.getElementById("onlineChat").classList.remove("hidden");
 
   const round = room.round;
