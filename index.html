@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>مين برا السالفة</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1>🎭 مين برا السالفة</h1>
+
+  <!-- اختيار الوضع -->
+  <div id="modeSelect">
+    <h3>اختار طريقة اللعب</h3>
+    <button onclick="selectMode('offline')">📱 Offline</button>
+    <button onclick="selectMode('online')">🌍 Online</button>
+  </div>
+
+  <!-- منيو الأونلاين -->
+  <div id="onlineMenu" class="hidden">
+    <h3>🌍 Online Mode</h3>
+    <button onclick="alert('قريبًا: غرفة عامة')">🌐 دخول غرفة عامة</button>
+    <button onclick="alert('قريبًا: إنشاء غرفة خاصة')">➕ إنشاء غرفة خاصة</button>
+    <button onclick="alert('قريبًا: دخول برقم غرفة')">🔢 دخول غرفة برقم</button>
+    <button onclick="backToMode()">⬅ رجوع</button>
+  </div>
+
+  <!-- إعدادات الأوفلاين -->
+  <div id="setup" class="hidden">
+    <h3>أسماء اللاعبين</h3>
+    <textarea id="names" placeholder="اكتب اسم كل لاعب في سطر"></textarea>
+
+    <h3>اختار السالفة</h3>
+    <div class="cats">
+      <label><input type="checkbox" value="foodDrink"> 🍽️ أكل ومشروبات</label><br>
+      <label><input type="checkbox" value="places"> 🏠 أماكن</label><br>
+      <label><input type="checkbox" value="jobs"> 💼 وظايف</label><br>
+      <label><input type="checkbox" value="animals"> 🐶 حيوانات</label><br>
+      <label><input type="checkbox" value="cars"> 🚗 سيارات</label><br>
+      <label><input type="checkbox" value="cartoon"> 📺 كرتون</label><br>
+      <label><input type="checkbox" value="games"> 🎮 ألعاب</label>
+    </div>
+
+    <button onclick="startGame()">ابدأ اللعبة</button>
+    <button onclick="backToMode()">⬅ رجوع</button>
+  </div>
+
+  <!-- شاشة اللعب -->
+  <div id="game" class="hidden">
+    <h2 id="turnText"></h2>
+    <div id="roleText"></div>
+    <button id="nextBtn" onclick="next()">التالي</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
