@@ -4,24 +4,18 @@ let outPlayers=[];
 let current=0;
 let secretWord="";
 
-/******** السوالف ********/
 const words=[
  "كشري","برجر","شاورما","قهوة","بيبسي",
  "فستان","فستان سهرة","جيبة",
  "ملهى ليلي","سينما","كافيه",
  "توكتوك","ميكروباص","أوبر",
- "كلب","قطة","حمار",
- "شاكوش","مقص","ولاعة",
- "سجان","دكتور","سايس",
- "سبونج بوب","بن تن",
- "حمام","لمبة","كنبة"
+ "شاكوش","مقص","ولاعة"
 ];
 
 function rnd(){return words[Math.floor(Math.random()*words.length)];}
 function qs(id){return document.getElementById(id);}
 function hideAll(){document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));}
 
-/******** NAV ********/
 function goHome(){
   hideAll();
   qs("home").classList.remove("hidden");
@@ -36,12 +30,8 @@ function goOffline(){
   qs("setup").classList.remove("hidden");
 }
 
-/******** PLAYERS ********/
 function addPlayer(){
-  if(qs("playersInputs").children.length>=8){
-    alert("أقصى عدد 8 لاعبين");
-    return;
-  }
+  if(qs("playersInputs").children.length>=8) return;
   const i=document.createElement("input");
   i.placeholder="اسم اللاعب";
   qs("playersInputs").appendChild(i);
@@ -50,29 +40,21 @@ function addPlayer(){
 function startGame(){
   players=[];
   scores={};
-
   document.querySelectorAll("#playersInputs input").forEach(i=>{
     if(i.value.trim()){
       players.push(i.value.trim());
       scores[i.value.trim()]=0;
     }
   });
-
-  if(players.length<4){
-    alert("أقل عدد 4 لاعبين");
-    return;
-  }
+  if(players.length<4) return alert("أقل عدد 4 لاعبين");
 
   const outCount=parseInt(qs("outCount").value);
-
   secretWord=rnd();
   outPlayers=[...players].sort(()=>0.5-Math.random()).slice(0,outCount);
-
   current=0;
   showPass();
 }
 
-/******** GAME ********/
 function showPass(){
   hideAll();
   qs("passText").innerText="📱 مرر الموبايل لـ "+players[current];
@@ -82,11 +64,10 @@ function showPass(){
 function showRole(){
   hideAll();
   const name=players[current];
-  if(outPlayers.includes(name)){
-    qs("roleText").innerText="❌ أنت برا السالفة";
-  }else{
-    qs("roleText").innerText="✅ الكلمة: "+secretWord;
-  }
+  qs("roleText").innerText=
+    outPlayers.includes(name)
+    ? "❌ أنت برا السالفة"
+    : "✅ الكلمة: "+secretWord;
   qs("role").classList.remove("hidden");
 }
 
@@ -95,19 +76,15 @@ function nextPlayer(){
   if(current>=players.length){
     hideAll();
     qs("reveal").classList.remove("hidden");
-  }else{
-    showPass();
-  }
+  }else showPass();
 }
 
-/******** REVEAL ********/
 function revealOut(){
   hideAll();
-  qs("outNames").innerText="🕵️ برا السالفة: "+outPlayers.join(" و ");
+  qs("outNames").innerText="برا السالفة: "+outPlayers.join(" و ");
   qs("outResult").classList.remove("hidden");
 }
 
-/******** GUESS ********/
 function startGuess(){
   hideAll();
   const arr=[secretWord];
@@ -116,7 +93,6 @@ function startGuess(){
     if(!arr.includes(w)) arr.push(w);
   }
   arr.sort(()=>Math.random()-0.5);
-
   const div=qs("choices");
   div.innerHTML="";
   arr.forEach(w=>{
@@ -125,22 +101,16 @@ function startGuess(){
     b.onclick=()=>checkGuess(w);
     div.appendChild(b);
   });
-
   qs("guess").classList.remove("hidden");
 }
 
 function checkGuess(w){
   outPlayers.forEach(p=>{
-    if(w===secretWord){
-      scores[p]+=1;
-    }else{
-      scores[p]-=1;
-    }
+    scores[p]+= w===secretWord ? 1 : -1;
   });
   showScore();
 }
 
-/******** SCORE ********/
 function showScore(){
   hideAll();
   const ul=qs("scoreList");
@@ -151,7 +121,6 @@ function showScore(){
   qs("score").classList.remove("hidden");
 }
 
-/******** NEXT ********/
 function newRound(){
   const outCount=outPlayers.length;
   secretWord=rnd();

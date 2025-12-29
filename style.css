@@ -33,12 +33,3 @@ input,select{
   border-radius:6px;
   border:none;
 }
-
-.back{
-  position:fixed;
-  top:10px;
-  left:10px;
-  width:auto;
-  background:#444;
-  color:#fff;
-}
