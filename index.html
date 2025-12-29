@@ -16,8 +16,8 @@
   <button onclick="goOnline()">🌐 Online</button>
 </div>
 
-<!-- ================= OFFLINE (زي ما هو) ================= -->
-<!-- الأوفلاين شغال ومش متغير -->
+<!-- ================= OFFLINE ================= -->
+<!-- (الأوفلاين زي ما هو – مش متغير) -->
 
 <div id="setup" class="card hidden">
   <h3>أسماء اللاعبين</h3>
@@ -67,53 +67,53 @@
 <!-- ================= ONLINE ================= -->
 
 <!-- LOGIN -->
-<div id="onlineLoginCard" class="card hidden">
+<div id="online-login" class="card hidden">
   <h3>🌐 Online</h3>
-  <input id="onlineName" placeholder="اسمك">
+  <input id="online-name" placeholder="اسمك">
   <button onclick="onlineLogin()">دخول</button>
-  <button onclick="offlineGoHome()">⬅ رجوع</button>
+  <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
 <!-- MENU -->
-<div id="onlineMenu" class="card hidden">
+<div id="online-menu" class="card hidden">
   <button onclick="createRoom()">➕ إنشاء غرفة</button>
-  <input id="joinCode" placeholder="كود الغرفة (6 أرقام)">
+  <input id="join-code" placeholder="كود الغرفة (6 أرقام)">
   <button onclick="joinRoom()">🚪 انضمام</button>
   <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
 <!-- LOBBY -->
-<div id="onlineLobby" class="card hidden">
+<div id="online-lobby" class="card hidden">
   <h3>رقم الغرفة</h3>
-  <h2 id="roomCode"></h2>
-  <p id="lobbyText"></p>
-  <button id="startRoundBtn" class="hidden" onclick="startRound()">▶️ بدء الراوند</button>
+  <h2 id="room-code"></h2>
+  <p id="lobby-text"></p>
+  <button id="start-round-btn" class="hidden" onclick="startRound()">▶️ بدء الراوند</button>
   <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
 <!-- ROLE -->
-<div id="onlineRole" class="card hidden">
-  <h3 id="onlineRoleText"></h3>
+<div id="online-role" class="card hidden">
+  <h3 id="online-role-text"></h3>
 </div>
 
 <!-- CHAT -->
-<div id="onlineChat" class="card hidden">
-  <h3 id="turnText"></h3>
-  <div id="chatMessages" style="min-height:120px"></div>
-  <input id="chatInput" class="hidden" placeholder="كلمة واحدة">
-  <button id="sendBtn" class="hidden" onclick="sendWord()">إرسال</button>
+<div id="online-chat" class="card hidden">
+  <h3 id="turn-text"></h3>
+  <div id="chat-messages" style="min-height:120px"></div>
+  <input id="chat-input" class="hidden" placeholder="كلمة واحدة">
+  <button id="send-btn" class="hidden" onclick="sendWord()">إرسال</button>
 </div>
 
 <!-- VOTE -->
-<div id="onlineVote" class="card hidden">
+<div id="online-vote" class="card hidden">
   <h3>🗳️ صوّت: مين برا السالفة؟</h3>
-  <div id="voteList"></div>
+  <div id="vote-list"></div>
   <button onclick="submitVote()">✔️ تأكيد التصويت</button>
 </div>
 
 <!-- RESULT -->
-<div id="onlineResult" class="card hidden">
-  <h3 id="voteResultText"></h3>
+<div id="online-result" class="card hidden">
+  <h3 id="vote-result-text"></h3>
   <button onclick="goHome()">🏠 رجوع</button>
 </div>
 
