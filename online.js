@@ -86,20 +86,29 @@ function joinRoom(){
     return;
   }
 
-  onlineState.roomId = code;
-  onlineState.isHost = false;
+  db.ref("rooms/" + code).once("value").then(snap=>{
+    const room = snap.val();
+    const count = Object.keys(room.players || {}).length;
 
-  db.ref("rooms/" + code + "/players/" + onlineState.id).set({
-    name: onlineState.name,
-    role: "",
-    ready: false
+    if(count >= 8){
+      alert("الغرفة ممتلئة (8 لاعبين)");
+      return;
+    }
+
+    onlineState.roomId = code;
+    onlineState.isHost = false;
+
+    db.ref("rooms/" + code + "/players/" + onlineState.id).set({
+      name: onlineState.name,
+      role: "",
+      ready: false
+    });
+
+    listenRoomOnline();
+    hideAllOnlineCards();
+    document.getElementById("onlineLobby").classList.remove("hidden");
+    document.getElementById("roomCode").innerText = code;
   });
-
-  listenRoomOnline();
-
-  hideAllOnlineCards();
-  document.getElementById("onlineLobby").classList.remove("hidden");
-  document.getElementById("roomCode").innerText = code;
 }
 
 /******** LISTEN ROOM ********/
@@ -270,7 +279,13 @@ function sendWord(){
   const roomRef = db.ref("rooms/" + onlineState.roomId);
 
   roomRef.once("value").then(snap=>{
-    const r = snap.val().round;
+    const room = snap.val();
+    const r = room.round;
+
+    // ✅ تأكيد إن ده دوره فعلًا
+    if(r.order[r.turn] !== onlineState.id){
+      return; // مش دورك
+    }
 
     roomRef.child("round/messages").push({
       name: onlineState.name,
@@ -286,7 +301,7 @@ function sendWord(){
     }
 
     if(nextLap > 2){
-      alert("خلصت لفتين – التصويت جاي");
+      roomRef.child("phase").set("vote");
       return;
     }
 
