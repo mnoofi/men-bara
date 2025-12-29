@@ -1,49 +1,37 @@
-let players=[];
-let scores={};
-let outPlayers=[];
-let current=0;
-let secretWord="";
+let players = [];
+let scores = {};
+let outPlayers = [];
+let currentIndex = 0;
+let secretWord = "";
 
-/******** السوالف ********/
-const words=[
- "كشري","برجر","شاورما","قهوة","بيبسي",
- "فستان","فستان سهرة","جيبة",
- "ملهى ليلي","سينما","كافيه",
- "توكتوك","ميكروباص","أوبر",
- "كلب","قطة","حمار",
- "شاكوش","مقص","ولاعة",
- "سجان","دكتور","سايس",
- "سبونج بوب","بن تن",
- "حمام","لمبة","كنبة"
+const words = [
+  "كشري","برجر","شاورما","قهوة","بيبسي",
+  "ميكروباص","توكتوك","أوبر","كلب","قطة",
+  "دكتور","سايس","سينما","كافيه","كنبة"
 ];
 
-function rnd(){return words[Math.floor(Math.random()*words.length)];}
-function qs(id){return document.getElementById(id);}
-
-/******** ❗❗ إخفاء الأوفلاين فقط ********/
-function hideAllOffline(){
-  document.querySelectorAll(
-    "#home,#setup,#pass,#role,#reveal,#outResult,#guess,#score"
-  ).forEach(c=>c.classList.add("hidden"));
+function qs(id){ return document.getElementById(id); }
+function hideAllCards(){
+  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
 }
 
-/******** NAV ********/
-function goHome(){
-  hideAllOffline();
+function offlineGoHome(){
+  hideAllCards();
   qs("home").classList.remove("hidden");
 }
 
-function goOffline(){
+/* ========= SETUP ========= */
+
+function offlineStart(){
   players=[];
   scores={};
   qs("playersInputs").innerHTML="";
-  for(let i=0;i<4;i++) addPlayer();
-  hideAllOffline();
+  for(let i=0;i<4;i++) offlineAddPlayer();
+  hideAllCards();
   qs("setup").classList.remove("hidden");
 }
 
-/******** PLAYERS ********/
-function addPlayer(){
+function offlineAddPlayer(){
   if(qs("playersInputs").children.length>=8){
     alert("أقصى عدد 8 لاعبين");
     return;
@@ -53,7 +41,7 @@ function addPlayer(){
   qs("playersInputs").appendChild(i);
 }
 
-function startGame(){
+function offlineStartGame(){
   players=[];
   scores={};
 
@@ -70,53 +58,55 @@ function startGame(){
   }
 
   const outCount=parseInt(qs("outCount").value);
-  secretWord=rnd();
+  secretWord = words[Math.floor(Math.random()*words.length)];
   outPlayers=[...players].sort(()=>0.5-Math.random()).slice(0,outCount);
-
-  current=0;
-  showPass();
+  currentIndex=0;
+  offlineShowPass();
 }
 
-/******** GAME ********/
-function showPass(){
-  hideAllOffline();
-  qs("passText").innerText="📱 مرر الموبايل لـ "+players[current];
+/* ========= GAME ========= */
+
+function offlineShowPass(){
+  hideAllCards();
+  qs("passText").innerText="📱 مرر الموبايل لـ "+players[currentIndex];
   qs("pass").classList.remove("hidden");
 }
 
-function showRole(){
-  hideAllOffline();
-  const name=players[current];
-  qs("roleText").innerText=
+function offlineShowRole(){
+  hideAllCards();
+  const name=players[currentIndex];
+  qs("roleText").innerText =
     outPlayers.includes(name)
     ? "❌ أنت برا السالفة"
     : "✅ الكلمة: "+secretWord;
   qs("role").classList.remove("hidden");
 }
 
-function nextPlayer(){
-  current++;
-  if(current>=players.length){
-    hideAllOffline();
+function offlineNextPlayer(){
+  currentIndex++;
+  if(currentIndex>=players.length){
+    hideAllCards();
     qs("reveal").classList.remove("hidden");
   }else{
-    showPass();
+    offlineShowPass();
   }
 }
 
-/******** REVEAL ********/
-function revealOut(){
-  hideAllOffline();
+/* ========= REVEAL ========= */
+
+function offlineReveal(){
+  hideAllCards();
   qs("outNames").innerText="🕵️ برا السالفة: "+outPlayers.join(" و ");
   qs("outResult").classList.remove("hidden");
 }
 
-/******** GUESS ********/
-function startGuess(){
-  hideAllOffline();
+/* ========= GUESS ========= */
+
+function offlineStartGuess(){
+  hideAllCards();
   const arr=[secretWord];
   while(arr.length<8){
-    const w=rnd();
+    const w=words[Math.floor(Math.random()*words.length)];
     if(!arr.includes(w)) arr.push(w);
   }
   arr.sort(()=>Math.random()-0.5);
@@ -126,23 +116,23 @@ function startGuess(){
   arr.forEach(w=>{
     const b=document.createElement("button");
     b.innerText=w;
-    b.onclick=()=>checkGuess(w);
+    b.onclick=()=>offlineCheckGuess(w);
     div.appendChild(b);
   });
-
   qs("guess").classList.remove("hidden");
 }
 
-function checkGuess(w){
+function offlineCheckGuess(w){
   outPlayers.forEach(p=>{
-    scores[p]+= w===secretWord ? 1 : -1;
+    scores[p]+= (w===secretWord?1:-1);
   });
-  showScore();
+  offlineShowScore();
 }
 
-/******** SCORE ********/
-function showScore(){
-  hideAllOffline();
+/* ========= SCORE ========= */
+
+function offlineShowScore(){
+  hideAllCards();
   const ul=qs("scoreList");
   ul.innerHTML="";
   for(let p in scores){
@@ -151,16 +141,15 @@ function showScore(){
   qs("score").classList.remove("hidden");
 }
 
-/******** NEXT ********/
-function newRound(){
+function offlineNewRound(){
   const outCount=outPlayers.length;
-  secretWord=rnd();
+  secretWord = words[Math.floor(Math.random()*words.length)];
   outPlayers=[...players].sort(()=>0.5-Math.random()).slice(0,outCount);
-  current=0;
-  showPass();
+  currentIndex=0;
+  offlineShowPass();
 }
 
-function editPlayers(){
-  hideAllOffline();
+function offlineEditPlayers(){
+  hideAllCards();
   qs("setup").classList.remove("hidden");
 }
