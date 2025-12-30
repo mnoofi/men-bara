@@ -15,50 +15,49 @@ let online = {
   isHost: false
 };
 
-/******** WORDS (ONLINE ONLY) ********/
-/* مهم جدًا: اسم مختلف عن الأوفلاين */
+/******** WORDS ********/
 const onlineWords = [
   "كشري","برجر","شاورما","قهوة","بيبسي",
-  "ميكروباص","توكتوك","أوبر","سينما","كافيه",
-  "كنبة","لمبة","فستان","ولاعة","مقص"
+  "مهرج","حديقة حيوانات","مستشفى الأمراض العقلية",
+  "ميكروباص","توكتوك","أوبر","سينما","كافيه","دكتور",
+  "كنبة","لمبة","فستان","ولاعة","مقص",
+  "طائر حمام","دورة مياه","تواليت",
+  "عيادة بيطرية","لبوس","كلوت بناتي",
+  "بوكسر","سليب أبيض"
 ];
 
 /******** HELPERS ********/
-function uid() {
-  return "u_" + Math.random().toString(36).slice(2, 9);
+function uid(){
+  return "u_" + Math.random().toString(36).slice(2,9);
 }
 
-function hideAllOnline() {
+function hideAllOnline(){
   document.querySelectorAll(
     "#online-login,#online-menu,#online-lobby,#online-role,#online-chat,#online-vote,#online-result"
-  ).forEach(el => el.classList.add("hidden"));
+  ).forEach(c=>c.classList.add("hidden"));
 }
 
 /******** NAV ********/
-function goOnline() {
-  document.querySelectorAll(".card").forEach(c =>
-    c.classList.add("hidden")
-  );
+function goOnline(){
+  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
   document.getElementById("online-login").classList.remove("hidden");
 }
 
-function goHome() {
-  document.querySelectorAll(".card").forEach(c =>
-    c.classList.add("hidden")
-  );
+function goHome(){
+  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
   document.getElementById("home").classList.remove("hidden");
 }
 
 /******** LOGIN ********/
-function onlineLogin() {
-  const input = document.getElementById("online-name");
-  if (!input.value.trim()) return alert("اكتب اسمك");
+function onlineLogin(){
+  const input=document.getElementById("online-name");
+  if(!input.value.trim()) return alert("اكتب اسمك");
 
-  online = {
-    id: uid(),
-    name: input.value.trim(),
-    roomId: "",
-    isHost: false
+  online={
+    id:uid(),
+    name:input.value.trim(),
+    roomId:"",
+    isHost:false
   };
 
   hideAllOnline();
@@ -66,226 +65,208 @@ function onlineLogin() {
 }
 
 /******** ROOM ********/
-function createRoom() {
-  online.roomId = Math.floor(100000 + Math.random() * 900000).toString();
-  online.isHost = true;
+function createRoom(){
+  online.roomId=Math.floor(100000+Math.random()*900000).toString();
+  online.isHost=true;
 
-  db.ref("rooms/" + online.roomId).set({
-    host: online.id,
-    phase: "lobby",
-    players: {
-      [online.id]: { name: online.name }
-    }
+  db.ref("rooms/"+online.roomId).set({
+    host:online.id,
+    phase:"lobby",
+    players:{[online.id]:{name:online.name}},
+    votes:{}
   });
 
   listenRoom();
-
   hideAllOnline();
   document.getElementById("online-lobby").classList.remove("hidden");
-  document.getElementById("room-code").innerText = online.roomId;
+  document.getElementById("room-code").innerText=online.roomId;
 }
 
-function joinRoom() {
-  const code = document.getElementById("join-code").value.trim();
-  if (code.length !== 6) return alert("كود غير صحيح");
+function joinRoom(){
+  const code=document.getElementById("join-code").value.trim();
+  if(code.length!==6) return alert("كود غير صحيح");
 
-  online.roomId = code;
+  online.roomId=code;
 
-  db.ref("rooms/" + code + "/players/" + online.id)
-    .set({ name: online.name });
+  db.ref("rooms/"+code+"/players/"+online.id)
+    .set({name:online.name});
 
   listenRoom();
-
   hideAllOnline();
   document.getElementById("online-lobby").classList.remove("hidden");
-  document.getElementById("room-code").innerText = code;
+  document.getElementById("room-code").innerText=code;
 }
 
 /******** LISTEN ********/
-function listenRoom() {
-  if (!online.roomId) return;
+function listenRoom(){
+  const ref=db.ref("rooms/"+online.roomId);
+  ref.off();
 
-  const ref = db.ref("rooms/" + online.roomId);
-  ref.off(); // مهم عشان ميكررش listeners
+  ref.on("value",snap=>{
+    const r=snap.val();
+    if(!r) return;
 
-  ref.on("value", snap => {
-    const r = snap.val();
-    if (!r) return;
-
-    if (r.phase === "lobby") {
-      document.getElementById("lobby-text").innerText =
-        online.isHost
-          ? "أنت الهوست – اضغط بدء الراوند"
-          : "في انتظار الهوست";
-
-      document
-        .getElementById("start-round-btn")
-        .classList.toggle("hidden", !online.isHost);
+    if(r.phase==="lobby"){
+      document.getElementById("lobby-text").innerText=
+        online.isHost?"أنت الهوست – اضغط بدء الراوند":"في انتظار الهوست";
+      document.getElementById("start-round-btn")
+        .classList.toggle("hidden",!online.isHost);
     }
 
-    if (r.phase === "role") showRole(r);
-    if (r.phase === "chat") showChat(r);
-    if (r.phase === "vote") showVote(r);
-    if (r.phase === "result") showResult(r);
+    if(r.phase==="role") showRole(r);
+    if(r.phase==="chat") showChat(r);
+    if(r.phase==="vote") showVote(r);
+    if(r.phase==="result") showResult(r);
   });
 }
 
 /******** START ROUND ********/
-function startRound() {
-  if (!online.isHost) return;
+function startRound(){
+  if(!online.isHost) return;
 
-  db.ref("rooms/" + online.roomId).once("value").then(snap => {
-    const data = snap.val();
-    if (!data || !data.players) return;
+  db.ref("rooms/"+online.roomId).once("value").then(s=>{
+    const ids=Object.keys(s.val().players);
+    if(ids.length<4 || ids.length>8){
+      alert("عدد اللاعبين من 4 إلى 8");
+      return;
+    }
 
-    const ids = Object.keys(data.players);
-    if (ids.length < 4) return alert("أقل عدد 4 لاعبين");
+    const outId=ids[Math.floor(Math.random()*ids.length)];
+    const word=onlineWords[Math.floor(Math.random()*onlineWords.length)];
 
-    const outId = ids[Math.floor(Math.random() * ids.length)];
-    const word =
-      onlineWords[Math.floor(Math.random() * onlineWords.length)];
-
-    const update = { phase: "role", outId, word };
-    ids.forEach(id => {
-      update["players/" + id + "/role"] =
-        id === outId ? "out" : "in";
+    const up={phase:"role",outId,word,votes:{},round:null};
+    ids.forEach(id=>{
+      up["players/"+id+"/role"]=id===outId?"out":"in";
     });
 
-    db.ref("rooms/" + online.roomId).update(update);
+    db.ref("rooms/"+online.roomId).update(up);
   });
 }
 
 /******** ROLE ********/
-function showRole(r) {
+function showRole(r){
   hideAllOnline();
   document.getElementById("online-role").classList.remove("hidden");
 
-  document.getElementById("online-role-text").innerText =
-    r.players[online.id].role === "out"
-      ? "❌ أنت برا السالفة"
-      : "✅ الكلمة: " + r.word;
+  document.getElementById("online-role-text").innerText=
+    r.players[online.id].role==="out"
+    ?"❌ أنت برا السالفة"
+    :"✅ الكلمة: "+r.word;
 
-  if (online.isHost) setTimeout(startChat, 2000);
+  if(online.isHost) setTimeout(startChat,2000);
 }
 
 /******** CHAT ********/
-function startChat() {
-  db.ref("rooms/" + online.roomId).once("value").then(snap => {
-    const ids = Object.keys(snap.val().players)
-      .sort(() => Math.random() - 0.5);
+function startChat(){
+  db.ref("rooms/"+online.roomId).once("value").then(s=>{
+    const ids=Object.keys(s.val().players).sort(()=>Math.random()-0.5);
 
-    db.ref("rooms/" + online.roomId + "/round").set({
-      order: ids,
-      turn: 0,
-      lap: 1,
-      messages: {}
+    db.ref("rooms/"+online.roomId+"/round").set({
+      order:ids,turn:0,lap:1,messages:{}
     });
 
-    db.ref("rooms/" + online.roomId + "/phase").set("chat");
+    db.ref("rooms/"+online.roomId+"/phase").set("chat");
   });
 }
 
-function showChat(r) {
+function showChat(r){
   hideAllOnline();
   document.getElementById("online-chat").classList.remove("hidden");
 
-  const rd = r.round;
-  const current = rd.order[rd.turn];
+  const rd=r.round;
+  const cur=rd.order[rd.turn];
 
-  document.getElementById("turn-text").innerText =
-    current === online.id
-      ? "دورك"
-      : "دور " + r.players[current].name;
+  document.getElementById("turn-text").innerText=
+    cur===online.id?"دورك":"دور "+r.players[cur].name;
 
   document.getElementById("chat-input")
-    .classList.toggle("hidden", current !== online.id);
-
+    .classList.toggle("hidden",cur!==online.id);
   document.getElementById("send-btn")
-    .classList.toggle("hidden", current !== online.id);
+    .classList.toggle("hidden",cur!==online.id);
 
-  const box = document.getElementById("chat-messages");
-  box.innerHTML = "";
-
-  Object.values(rd.messages || {}).forEach(m => {
-    box.innerHTML += `<p>${m.name}: ${m.word}</p>`;
+  const box=document.getElementById("chat-messages");
+  box.innerHTML="";
+  Object.values(rd.messages||{}).forEach(m=>{
+    box.innerHTML+=`<p>${m.name}: ${m.word}</p>`;
   });
 }
 
-function sendWord() {
-  const input = document.getElementById("chat-input");
-  const w = input.value.trim();
-  if (!/^[\u0600-\u06FF]+$/.test(w)) return;
+function sendWord(){
+  const input=document.getElementById("chat-input");
+  const w=input.value.trim();
+  if(!/^[\u0600-\u06FF]+$/.test(w)) return;
 
-  const ref = db.ref("rooms/" + online.roomId);
+  const ref=db.ref("rooms/"+online.roomId);
+  ref.once("value").then(s=>{
+    const r=s.val().round;
+    if(r.order[r.turn]!==online.id) return;
 
-  ref.once("value").then(snap => {
-    const r = snap.val().round;
-    if (r.order[r.turn] !== online.id) return;
+    ref.child("round/messages").push({name:online.name,word:w});
 
-    ref.child("round/messages").push({
-      name: online.name,
-      word: w
-    });
+    let t=r.turn+1,l=r.lap;
+    if(t>=r.order.length){t=0;l++;}
+    if(l>2){ref.child("phase").set("vote");return;}
 
-    let t = r.turn + 1;
-    let l = r.lap;
-
-    if (t >= r.order.length) {
-      t = 0;
-      l++;
-    }
-
-    if (l > 2) {
-      ref.child("phase").set("vote");
-      return;
-    }
-
-    ref.child("round").update({ turn: t, lap: l });
-    input.value = "";
+    ref.child("round").update({turn:t,lap:l});
+    input.value="";
   });
 }
 
 /******** VOTE ********/
-function showVote(r) {
+function showVote(r){
   hideAllOnline();
   document.getElementById("online-vote").classList.remove("hidden");
 
-  const list = document.getElementById("vote-list");
-  list.innerHTML = "";
+  const list=document.getElementById("vote-list");
+  const status=document.getElementById("vote-status");
+  list.innerHTML="";
 
-  Object.entries(r.players).forEach(([id, p]) => {
-    if (id === online.id) return;
+  const votes=r.votes||{};
+  const total=Object.keys(r.players).length;
 
-    const b = document.createElement("button");
-    b.innerText = p.name;
-    b.onclick = () => {
-      list.querySelectorAll("button")
-        .forEach(x => x.classList.remove("selected"));
+  status.innerText=`🗳️ تم التصويت: ${Object.keys(votes).length} / ${total}`;
+
+  Object.entries(r.players).forEach(([id,p])=>{
+    if(id===online.id) return;
+
+    const b=document.createElement("button");
+    b.innerText=p.name;
+    if(Object.values(votes).includes(id)) b.style.opacity="0.5";
+
+    b.onclick=()=>{
+      list.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));
       b.classList.add("selected");
-      b.dataset.id = id;
+      b.dataset.id=id;
     };
     list.appendChild(b);
   });
+
+  if(Object.keys(votes).length===total){
+    db.ref("rooms/"+online.roomId+"/phase").set("result");
+  }
 }
 
-function submitVote() {
-  const selected =
-    document.querySelector("#vote-list .selected");
-  if (!selected) return alert("اختار لاعب");
+function submitVote(){
+  const sel=document.querySelector("#vote-list .selected");
+  if(!sel) return alert("اختار لاعب");
 
-  db.ref("rooms/" + online.roomId + "/votes/" + online.id)
-    .set(selected.dataset.id);
-
-  db.ref("rooms/" + online.roomId + "/phase")
-    .set("result");
+  db.ref("rooms/"+online.roomId+"/votes/"+online.id)
+    .set(sel.dataset.id);
 }
 
 /******** RESULT ********/
-function showResult(r) {
+function showResult(r){
   hideAllOnline();
   document.getElementById("online-result").classList.remove("hidden");
 
-  document.getElementById("vote-result-text").innerText =
-    "🕵️ برا السالفة كان: " +
-    r.players[r.outId].name;
+  document.getElementById("vote-result-text").innerText=
+    "🕵️ برا السالفة كان: "+r.players[r.outId].name;
+
+  document.getElementById("next-round-btn")
+    .classList.toggle("hidden",!online.isHost);
+}
+
+/******** NEXT ROUND ********/
+function startNextRound(){
+  startRound();
 }

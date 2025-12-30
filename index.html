@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<button class="back" onclick="offlineGoHome()">⬅ رجوع</button>
+<button class="back" onclick="goHome()">⬅ رجوع</button>
 
 <!-- ================= HOME ================= -->
 <div id="home" class="card">
@@ -17,7 +17,7 @@
 </div>
 
 <!-- ================= OFFLINE ================= -->
-<!-- (الأوفلاين زي ما هو – مش متغير) -->
+<!-- الأوفلاين زي ما هو بدون أي تغيير -->
 
 <div id="setup" class="card hidden">
   <h3>أسماء اللاعبين</h3>
@@ -87,7 +87,13 @@
   <h3>رقم الغرفة</h3>
   <h2 id="room-code"></h2>
   <p id="lobby-text"></p>
-  <button id="start-round-btn" class="hidden" onclick="startRound()">▶️ بدء الراوند</button>
+
+  <button id="start-round-btn"
+          class="hidden"
+          onclick="startRound()">
+    ▶️ بدء الراوند
+  </button>
+
   <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
@@ -100,20 +106,41 @@
 <div id="online-chat" class="card hidden">
   <h3 id="turn-text"></h3>
   <div id="chat-messages" style="min-height:120px"></div>
-  <input id="chat-input" class="hidden" placeholder="كلمة واحدة">
-  <button id="send-btn" class="hidden" onclick="sendWord()">إرسال</button>
+
+  <input id="chat-input"
+         class="hidden"
+         placeholder="كلمة واحدة">
+
+  <button id="send-btn"
+          class="hidden"
+          onclick="sendWord()">
+    إرسال
+  </button>
 </div>
 
-<!-- VOTE -->
+<!-- ================= VOTE ================= -->
 <div id="online-vote" class="card hidden">
   <h3>🗳️ صوّت: مين برا السالفة؟</h3>
+
+  <!-- حالة التصويت -->
+  <p id="vote-status"></p>
+
+  <!-- مين صوّت ومين لسه -->
+  <div id="vote-progress"></div>
+
+  <!-- اختيارات التصويت -->
   <div id="vote-list"></div>
+
   <button onclick="submitVote()">✔️ تأكيد التصويت</button>
 </div>
 
-<!-- RESULT -->
+<!-- ================= RESULT ================= -->
 <div id="online-result" class="card hidden">
   <h3 id="vote-result-text"></h3>
+
+  <!-- راوند جديد بدون الخروج -->
+  <button onclick="startRound()">🔁 راوند جديد</button>
+
   <button onclick="goHome()">🏠 رجوع</button>
 </div>
 
