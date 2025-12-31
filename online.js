@@ -213,46 +213,86 @@ function sendWord(){
 }
 
 /******** VOTE ********/
-function showVote(r){
+function showVote(r) {
   hideAllOnline();
   document.getElementById("online-vote").classList.remove("hidden");
 
-  const list=document.getElementById("vote-list");
-  const status=document.getElementById("vote-status");
-  list.innerHTML="";
+  const list = document.getElementById("vote-list");
+  const status = document.getElementById("vote-status");
+  const progress = document.getElementById("vote-progress");
 
-  const votes=r.votes||{};
-  const total=Object.keys(r.players).length;
+  list.innerHTML = "";
+  progress.innerHTML = "";
 
-  status.innerText=`🗳️ تم التصويت: ${Object.keys(votes).length} / ${total}`;
+  const votes = r.votes || {};
+  const totalPlayers = Object.keys(r.players).length;
 
-  Object.entries(r.players).forEach(([id,p])=>{
-    if(id===online.id) return;
+  // حالة التصويت (عدد فقط)
+  status.innerText =
+    `🗳️ تم التصويت: ${Object.keys(votes).length} / ${totalPlayers}`;
 
-    const b=document.createElement("button");
-    b.innerText=p.name;
-    if(Object.values(votes).includes(id)) b.style.opacity="0.5";
+  // مين صوّت ومين لسه (من غير إظهار على مين)
+  Object.entries(r.players).forEach(([id, p]) => {
+    const div = document.createElement("div");
+    div.innerText = votes[id]
+      ? `✅ ${p.name} صوّت`
+      : `⏳ ${p.name} لسه`;
+    progress.appendChild(div);
+  });
 
-    b.onclick=()=>{
-      list.querySelectorAll("button").forEach(x=>x.classList.remove("selected"));
+  // لو اللاعب صوّت قبل كده → نقفل التصويت عنده
+  if (votes[online.id]) {
+    const note = document.createElement("p");
+    note.innerText = "✅ انت صوّت خلاص، في انتظار الباقي...";
+    list.appendChild(note);
+    return;
+  }
+
+  // عرض اختيارات التصويت (سرّي)
+  Object.entries(r.players).forEach(([id, p]) => {
+    if (id === online.id) return;
+
+    const b = document.createElement("button");
+    b.innerText = p.name;
+
+    b.onclick = () => {
+      list.querySelectorAll("button")
+        .forEach(x => x.classList.remove("selected"));
+
       b.classList.add("selected");
-      b.dataset.id=id;
+      b.dataset.id = id;
     };
+
     list.appendChild(b);
   });
 
-  if(Object.keys(votes).length===total){
-    db.ref("rooms/"+online.roomId+"/phase").set("result");
+  // لو الكل صوّت → نتيجة
+  if (Object.keys(votes).length === totalPlayers) {
+    db.ref("rooms/" + online.roomId + "/phase").set("result");
   }
 }
 
-function submitVote(){
-  const sel=document.querySelector("#vote-list .selected");
-  if(!sel) return alert("اختار لاعب");
 
-  db.ref("rooms/"+online.roomId+"/votes/"+online.id)
-    .set(sel.dataset.id);
+function submitVote() {
+  const selected =
+    document.querySelector("#vote-list .selected");
+
+  if (!selected) return alert("اختار لاعب");
+
+  const voteRef =
+    db.ref("rooms/" + online.roomId + "/votes/" + online.id);
+
+  // منع تغيير التصويت
+  voteRef.once("value").then(snap => {
+    if (snap.exists()) {
+      alert("إنت صوّت قبل كده");
+      return;
+    }
+
+    voteRef.set(selected.dataset.id);
+  });
 }
+
 
 /******** RESULT ********/
 function showResult(r){
