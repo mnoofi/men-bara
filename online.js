@@ -6,6 +6,8 @@ firebase.initializeApp({
   projectId: "men-bara"
 });
 const db = firebase.database();
+const auth = firebase.auth();
+
 
 /******** STATE ********/
 let online = {
@@ -306,10 +308,12 @@ function startNextRound(){
 }
 /******** firebase new ********/
 function googleLogin() {
+
   const provider = new firebase.auth.GoogleAuthProvider();
 
-  firebase.auth().signInWithPopup(provider)
-    .then(result => {
+  auth.signInWithPopup(provider)
+    .then((result) => {
+
       const user = result.user;
 
       online = {
@@ -319,12 +323,16 @@ function googleLogin() {
         isHost: false
       };
 
+      console.log("تم تسجيل الدخول:", user.displayName);
+
       hideAllOnline();
       document.getElementById("online-menu").classList.remove("hidden");
+
     })
-    .catch(error => {
+    .catch((error) => {
+      console.error("Login Error:", error);
       alert("في مشكلة في تسجيل الدخول");
-      console.log(error);
     });
 }
+
 
