@@ -306,13 +306,19 @@ function showResult(r){
 function startNextRound(){
   startRound();
 }
-/******** firebase new ********/
+/******** GOOGLE LOGIN FIX ********/
+
+const auth = firebase.auth();
+
 function googleLogin() {
-
   const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithRedirect(provider);
+}
 
-  auth.signInWithPopup(provider)
-    .then((result) => {
+auth.getRedirectResult()
+  .then((result) => {
+
+    if (result.user) {
 
       const user = result.user;
 
@@ -323,16 +329,12 @@ function googleLogin() {
         isHost: false
       };
 
-      console.log("تم تسجيل الدخول:", user.displayName);
-
       hideAllOnline();
       document.getElementById("online-menu").classList.remove("hidden");
+    }
 
-    })
-    .catch((error) => {
-      console.error("Login Error:", error);
-      alert("في مشكلة في تسجيل الدخول");
-    });
-}
-
-
+  })
+  .catch((error) => {
+    console.error("Redirect Login Error:", error);
+    alert("حصل خطأ في تسجيل الدخول");
+  });
