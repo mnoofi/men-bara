@@ -304,3 +304,27 @@ function showResult(r){
 function startNextRound(){
   startRound();
 }
+/******** firebase new ********/
+function googleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+
+  firebase.auth().signInWithPopup(provider)
+    .then(result => {
+      const user = result.user;
+
+      online = {
+        id: user.uid,
+        name: user.displayName,
+        roomId: "",
+        isHost: false
+      };
+
+      hideAllOnline();
+      document.getElementById("online-menu").classList.remove("hidden");
+    })
+    .catch(error => {
+      alert("في مشكلة في تسجيل الدخول");
+      console.log(error);
+    });
+}
+
