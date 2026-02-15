@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>مين برا السالفة</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<button class="back" onclick="goHome()">⬅ رجوع</button>
+
+<!-- ================= HOME ================= -->
+<div id="home" class="card">
+  <h2>🎭 مين برا السالفة</h2>
+  <button onclick="offlineStart()">🟢 Offline</button>
+  <button onclick="goOnline()">🌐 Online</button>
+</div>
+
+<!-- ================= OFFLINE ================= -->
+<!-- الأوفلاين زي ما هو بدون أي تغيير -->
+
+<div id="setup" class="card hidden">
+  <h3>أسماء اللاعبين</h3>
+  <div id="playersInputs"></div>
+  <button onclick="offlineAddPlayer()">➕ إضافة لاعب</button>
+
+  <label>عدد اللي برا السالفة</label>
+  <select id="outCount">
+    <option value="1">واحد</option>
+    <option value="2">اتنين</option>
+  </select>
+
+  <button onclick="offlineStartGame()">▶️ Start Game</button>
+</div>
+
+<div id="pass" class="card hidden">
+  <h3 id="passText"></h3>
+  <button onclick="offlineShowRole()">👁 شوف دورك</button>
+</div>
+
+<div id="role" class="card hidden">
+  <h3 id="roleText"></h3>
+  <button onclick="offlineNextPlayer()">📱 التالي</button>
+</div>
+
+<div id="reveal" class="card hidden">
+  <button onclick="offlineReveal()">🕵️ كشف اللي برا السالفة</button>
+</div>
+
+<div id="outResult" class="card hidden">
+  <h3 id="outNames"></h3>
+  <button onclick="offlineStartGuess()">🧠 فرصة تخمين</button>
+</div>
+
+<div id="guess" class="card hidden">
+  <h3>اختار الكلمة الصح</h3>
+  <div id="choices"></div>
+</div>
+
+<div id="score" class="card hidden">
+  <h3>🏆 النقاط</h3>
+  <ul id="scoreList"></ul>
+  <button onclick="offlineNewRound()">🔁 دور جديد</button>
+  <button onclick="offlineEditPlayers()">👥 تعديل اللاعبين</button>
+</div>
+
+<!-- ================= ONLINE ================= -->
+
+<!-- LOGIN -->
+<div id="online-login" class="card hidden">
+  <h3>🌐 Online</h3>
+  <button onclick="googleLogin()">🔵 تسجيل الدخول بحساب Google</button>
+  <button onclick="goHome()">⬅ رجوع</button>
+</div>
+
+
+<!-- MENU -->
+<div id="online-menu" class="card hidden">
+  <button onclick="createRoom()">➕ إنشاء غرفة</button>
+  <input id="join-code" placeholder="كود الغرفة (6 أرقام)">
+  <button onclick="joinRoom()">🚪 انضمام</button>
+  <button onclick="goHome()">⬅ رجوع</button>
+</div>
+
+<!-- LOBBY -->
+<div id="online-lobby" class="card hidden">
+  <h3>رقم الغرفة</h3>
+  <h2 id="room-code"></h2>
+  <p id="lobby-text"></p>
+
+  <button id="start-round-btn"
+          class="hidden"
+          onclick="startRound()">
+    ▶️ بدء الراوند
+  </button>
+
+  <button onclick="goHome()">⬅ رجوع</button>
+</div>
+
+<!-- ROLE -->
+<div id="online-role" class="card hidden">
+  <h3 id="online-role-text"></h3>
+</div>
+
+<!-- CHAT -->
+<div id="online-chat" class="card hidden">
+  <h3 id="turn-text"></h3>
+  <div id="chat-messages" style="min-height:120px"></div>
+
+  <input id="chat-input"
+         class="hidden"
+         placeholder="كلمة واحدة">
+
+  <button id="send-btn"
+          class="hidden"
+          onclick="sendWord()">
+    إرسال
+  </button>
+</div>
+
+<!-- ================= VOTE ================= -->
+<div id="online-vote" class="card hidden">
+  <h3>🗳️ صوّت: مين برا السالفة؟</h3>
+
+  <!-- حالة التصويت -->
+  <p id="vote-status"></p>
+
+  <!-- مين صوّت ومين لسه -->
+  <div id="vote-progress"></div>
+
+  <!-- اختيارات التصويت -->
+  <div id="vote-list"></div>
+
+  <button onclick="submitVote()">✔️ تأكيد التصويت</button>
+</div>
+
+<!-- ================= RESULT ================= -->
+<div id="online-result" class="card hidden">
+  <h3 id="vote-result-text"></h3>
+
+  <!-- راوند جديد بدون الخروج -->
+  <button onclick="startRound()">🔁 راوند جديد</button>
+
+  <button onclick="goHome()">🏠 رجوع</button>
+</div>
+
+<!-- ================= SCRIPTS ================= -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+
+<script src="script.js"></script>
+<script src="online.js"></script>
+</body>
+</html>
