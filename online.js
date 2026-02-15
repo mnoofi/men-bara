@@ -5,8 +5,9 @@ firebase.initializeApp({
   databaseURL: "https://men-bara-default-rtdb.firebaseio.com",
   projectId: "men-bara"
 });
+
 const db = firebase.database();
-const auth = firebase.auth();
+const auth = firebase.auth(); // موجود مرة واحدة بس
 
 
 /******** STATE ********/
@@ -17,10 +18,43 @@ let online = {
   isHost: false
 };
 
+
+/******** GOOGLE LOGIN ********/
+function googleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithRedirect(provider);
+}
+
+auth.getRedirectResult()
+  .then((result) => {
+
+    if (result.user) {
+
+      const user = result.user;
+
+      online = {
+        id: user.uid,
+        name: user.displayName,
+        roomId: "",
+        isHost: false
+      };
+
+      hideAllOnline();
+      document.getElementById("online-menu").classList.remove("hidden");
+    }
+
+  })
+  .catch((error) => {
+    console.error("Redirect Login Error:", error);
+    alert("حصل خطأ في تسجيل الدخول");
+  });
+
+
 /******** WORDS ********/
 const onlineWords = [
   "كشري","برجر","شاورما","قهوة","بيبسي","مهرج","حديقة حيوانات","مستشفى الأمراض العقلية","ميكروباص","توكتوك","أوبر","سينما","كافيه","دكتور","كنبة","لمبة","فستان","ولاعة","مقص","طائر حمام","دورة مياه","تواليت","عيادة بيطرية","لبوس","كلوت بناتي","بوكسر","سليب أبيض","بيضة","فرخة","محل مشويات","جزمة حريمي","كرة سلة","سرير","دبانة","شمعة","أولويز","سويت","طعمية","نادي","بسكوت","بطاطس","قاعة أفراح","صياد سمك","قبطان","حلاق","مهندس","رائد فضاء","عامل بناء"
 ];
+
 
 /******** HELPERS ********/
 function uid(){
@@ -33,6 +67,7 @@ function hideAllOnline(){
   ).forEach(c=>c.classList.add("hidden"));
 }
 
+
 /******** NAV ********/
 function goOnline(){
   document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
@@ -43,6 +78,7 @@ function goHome(){
   document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
   document.getElementById("home").classList.remove("hidden");
 }
+
 
 /******** LOGIN ********/
 function onlineLogin(){
@@ -59,6 +95,7 @@ function onlineLogin(){
   hideAllOnline();
   document.getElementById("online-menu").classList.remove("hidden");
 }
+
 
 /******** ROOM ********/
 function createRoom(){
@@ -93,6 +130,7 @@ function joinRoom(){
   document.getElementById("room-code").innerText=code;
 }
 
+
 /******** LISTEN ********/
 function listenRoom(){
   const ref=db.ref("rooms/"+online.roomId);
@@ -115,6 +153,7 @@ function listenRoom(){
     if(r.phase==="result") showResult(r);
   });
 }
+
 
 /******** START ROUND ********/
 function startRound(){
@@ -139,6 +178,7 @@ function startRound(){
   });
 }
 
+
 /******** ROLE ********/
 function showRole(r){
   hideAllOnline();
@@ -151,6 +191,7 @@ function showRole(r){
 
   if(online.isHost) setTimeout(startChat,2000);
 }
+
 
 /******** CHAT ********/
 function startChat(){
@@ -208,6 +249,7 @@ function sendWord(){
   });
 }
 
+
 /******** VOTE ********/
 function showVote(r) {
   hideAllOnline();
@@ -223,11 +265,9 @@ function showVote(r) {
   const votes = r.votes || {};
   const totalPlayers = Object.keys(r.players).length;
 
-  // حالة التصويت (عدد فقط)
   status.innerText =
     `🗳️ تم التصويت: ${Object.keys(votes).length} / ${totalPlayers}`;
 
-  // مين صوّت ومين لسه (من غير إظهار على مين)
   Object.entries(r.players).forEach(([id, p]) => {
     const div = document.createElement("div");
     div.innerText = votes[id]
@@ -236,7 +276,6 @@ function showVote(r) {
     progress.appendChild(div);
   });
 
-  // لو اللاعب صوّت قبل كده → نقفل التصويت عنده
   if (votes[online.id]) {
     const note = document.createElement("p");
     note.innerText = "✅ انت صوّت خلاص، في انتظار الباقي...";
@@ -244,7 +283,6 @@ function showVote(r) {
     return;
   }
 
-  // عرض اختيارات التصويت (سرّي)
   Object.entries(r.players).forEach(([id, p]) => {
     if (id === online.id) return;
 
@@ -262,12 +300,10 @@ function showVote(r) {
     list.appendChild(b);
   });
 
-  // لو الكل صوّت → نتيجة
   if (Object.keys(votes).length === totalPlayers) {
     db.ref("rooms/" + online.roomId + "/phase").set("result");
   }
 }
-
 
 function submitVote() {
   const selected =
@@ -278,7 +314,6 @@ function submitVote() {
   const voteRef =
     db.ref("rooms/" + online.roomId + "/votes/" + online.id);
 
-  // منع تغيير التصويت
   voteRef.once("value").then(snap => {
     if (snap.exists()) {
       alert("إنت صوّت قبل كده");
@@ -302,39 +337,8 @@ function showResult(r){
     .classList.toggle("hidden",!online.isHost);
 }
 
+
 /******** NEXT ROUND ********/
 function startNextRound(){
   startRound();
 }
-/******** GOOGLE LOGIN FIX ********/
-
-const auth = firebase.auth();
-
-function googleLogin() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithRedirect(provider);
-}
-
-auth.getRedirectResult()
-  .then((result) => {
-
-    if (result.user) {
-
-      const user = result.user;
-
-      online = {
-        id: user.uid,
-        name: user.displayName,
-        roomId: "",
-        isHost: false
-      };
-
-      hideAllOnline();
-      document.getElementById("online-menu").classList.remove("hidden");
-    }
-
-  })
-  .catch((error) => {
-    console.error("Redirect Login Error:", error);
-    alert("حصل خطأ في تسجيل الدخول");
-  });
