@@ -17,8 +17,6 @@
 </div>
 
 <!-- ================= OFFLINE ================= -->
-<!-- الأوفلاين زي ما هو بدون أي تغيير -->
-
 <div id="setup" class="card hidden">
   <h3>أسماء اللاعبين</h3>
   <div id="playersInputs"></div>
@@ -73,7 +71,6 @@
   <button onclick="goHome()">⬅ رجوع</button>
 </div>
 
-
 <!-- MENU -->
 <div id="online-menu" class="card hidden">
   <button onclick="createRoom()">➕ إنشاء غرفة</button>
@@ -121,36 +118,26 @@
 <!-- ================= VOTE ================= -->
 <div id="online-vote" class="card hidden">
   <h3>🗳️ صوّت: مين برا السالفة؟</h3>
-
-  <!-- حالة التصويت -->
   <p id="vote-status"></p>
-
-  <!-- مين صوّت ومين لسه -->
   <div id="vote-progress"></div>
-
-  <!-- اختيارات التصويت -->
   <div id="vote-list"></div>
-
   <button onclick="submitVote()">✔️ تأكيد التصويت</button>
 </div>
 
 <!-- ================= RESULT ================= -->
 <div id="online-result" class="card hidden">
   <h3 id="vote-result-text"></h3>
-
-  <!-- راوند جديد بدون الخروج -->
   <button onclick="startRound()">🔁 راوند جديد</button>
-
   <button onclick="goHome()">🏠 رجوع</button>
 </div>
 
 <!-- ================= SCRIPTS ================= -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script src="script.js"></script>
 <script src="online.js"></script>
+
 </body>
 </html>

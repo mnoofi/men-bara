@@ -7,7 +7,7 @@ firebase.initializeApp({
 });
 
 const db = firebase.database();
-const auth = firebase.auth(); // موجود مرة واحدة بس
+const auth = firebase.auth();   // موجود مرة واحدة بس
 
 
 /******** STATE ********/
@@ -19,7 +19,8 @@ let online = {
 };
 
 
-/******** GOOGLE LOGIN ********/
+/******** GOOGLE LOGIN (التعديل هنا فقط) ********/
+
 function googleLogin() {
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithRedirect(provider);
@@ -27,7 +28,6 @@ function googleLogin() {
 
 auth.getRedirectResult()
   .then((result) => {
-
     if (result.user) {
 
       const user = result.user;
@@ -42,11 +42,9 @@ auth.getRedirectResult()
       hideAllOnline();
       document.getElementById("online-menu").classList.remove("hidden");
     }
-
   })
   .catch((error) => {
     console.error("Redirect Login Error:", error);
-    alert("حصل خطأ في تسجيل الدخول");
   });
 
 
